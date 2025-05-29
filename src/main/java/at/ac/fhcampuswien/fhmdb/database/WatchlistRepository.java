@@ -54,14 +54,14 @@ public class WatchlistRepository implements Observable<Movie> {
             if (count == 0) {
                 WatchlistMovieEntity entity = new WatchlistMovieEntity(movie.getId());
                 int result = dao.create(entity);
-                notifyObservers(movie, true, "Movie successfully added to watchlist.");
+                notifyObservers(movie, true, "✔ '" + movie.getTitle() + "' was added to your watchlist.");
                 return result;
             } else {
-                notifyObservers(movie, false, "Movie is already in the watchlist.");
+                notifyObservers(movie, false, "❌ '" + movie.getTitle() + "' is already in your watchlist.");
                 return 0;
             }
         } catch (Exception e) {
-            notifyObservers(movie, false, "Error adding movie to watchlist.");
+            notifyObservers(movie, false, "❌ Error adding '" + movie.getTitle() + "' to watchlist.");
             e.printStackTrace();
             throw new DataBaseException("Error while adding to watchlist");
         }
@@ -72,13 +72,13 @@ public class WatchlistRepository implements Observable<Movie> {
         try {
             int result = dao.delete(dao.queryBuilder().where().eq("apiId", movie.getId()).query());
             if (result > 0) {
-                notifyObservers(movie, true, "Movie successfully removed from watchlist.");
+                notifyObservers(movie, true, "✔ '" + movie.getTitle() + "' was removed from your watchlist.");
             } else {
-                notifyObservers(movie, false, "Movie was not in the watchlist.");
+                notifyObservers(movie, false, "❌ '" + movie.getTitle() + "' was not in your watchlist.");
             }
             return result;
         } catch (Exception e) {
-            notifyObservers(movie, false, "Error removing movie from watchlist.");
+            notifyObservers(movie, false, "❌ Error removing '" + movie.getTitle() + "' from watchlist.");
             throw new DataBaseException("Error while removing from watchlist");
         }
     }
