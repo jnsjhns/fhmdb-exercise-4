@@ -1,5 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
+import at.ac.fhcampuswien.fhmdb.database.MovieEntity;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -92,6 +94,27 @@ public class Movie {
 
     public double getRating() {
         return rating;
+    }
+
+    public static Movie fromEntity(MovieEntity entity) {
+        return new Movie(
+                entity.getApiId(),
+                entity.getTitle(),
+                entity.getDescription(),
+                entity.getGenres(),
+                entity.getReleaseYear(),
+                entity.getImageUrl(),
+                entity.getLengthInMinutes(),
+                entity.getRating()
+        );
+    }
+
+    public static List<Movie> fromEntities(List<MovieEntity> entities) {
+        List<Movie> movies = new ArrayList<>();
+        for (MovieEntity entity : entities) {
+            movies.add(fromEntity(entity));
+        }
+        return movies;
     }
 
     public static List<Movie> initializeMovies(){

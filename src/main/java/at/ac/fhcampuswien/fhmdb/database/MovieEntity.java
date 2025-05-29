@@ -52,13 +52,12 @@ public class MovieEntity {
     }
 
     private String genresToString(List<Genre> genres) {
-        StringBuilder sb = new StringBuilder();
-        for (Genre genre : genres) {
-            sb.append(genre.name());
-            sb.append(",");
-        }
-        return sb.toString();
+        return genres == null || genres.isEmpty()
+                ? ""
+                : genres.stream().map(Genre::name).reduce((a, b) -> a + "," + b).orElse("");
     }
+
+
 
     public long getId() {
         return id;
@@ -106,7 +105,13 @@ public class MovieEntity {
     }
 
     public List<Genre> getGenres() {
-        return Arrays.stream(genres.split(",")).map(Genre::valueOf).toList();
+        if (genres == null || genres.isBlank()) {
+            return new ArrayList<>();
+        }
+        return Arrays.stream(genres.split(","))
+                .filter(s -> !s.isBlank())
+                .map(Genre::valueOf)
+                .toList();
     }
 
     public void setGenres(List<Genre> genres) {
@@ -154,4 +159,5 @@ public class MovieEntity {
         }
         return movies;
     }
+
 }
