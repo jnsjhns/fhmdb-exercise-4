@@ -21,7 +21,7 @@ public class MovieAPI {
         }
         return url.toString();
     }
-
+/*
     private static String buildUrl(String query, Genre genre, String releaseYear, String ratingFrom) {
         StringBuilder url = new StringBuilder(URL);
 
@@ -47,11 +47,11 @@ public class MovieAPI {
 
         return url.toString();
     }
-
+*/
     public static List<Movie> getAllMovies() throws MovieApiException {
         return getAllMovies(null, null, null, null);
     }
-
+/*
     public static List<Movie> getAllMovies(String query, Genre genre, String releaseYear, String ratingFrom) throws MovieApiException{
         String url = buildUrl(query, genre, releaseYear, ratingFrom);
         Request request = new Request.Builder()
@@ -70,6 +70,31 @@ public class MovieAPI {
             throw new MovieApiException(e.getMessage());
         }
     }
+*/
+public static List<Movie> getAllMovies(String query, Genre genre, String releaseYear, String ratingFrom) throws MovieApiException {
+    String url = new MovieAPIRequestBuilder(URL)
+            .query(query)
+            .genre(genre != null ? genre.name() : null)
+            .releaseYear(releaseYear)
+            .ratingFrom(ratingFrom)
+            .build();
+
+    Request request = new Request.Builder()
+            .url(url)
+            .removeHeader("User-Agent")
+            .addHeader("User-Agent", "http.agent")  // needed for the server to accept the request
+            .build();
+
+    try (Response response = client.newCall(request).execute()) {
+        String responseBody = Objects.requireNonNull(response.body()).string();
+        Gson gson = new Gson();
+        Movie[] movies = gson.fromJson(responseBody, Movie[].class);
+
+        return Arrays.asList(movies);
+    } catch (Exception e) {
+        throw new MovieApiException(e.getMessage());
+    }
+}
 
     public Movie requestMovieById(UUID id) throws MovieApiException {
         String url = buildUrl(id);

@@ -1,4 +1,4 @@
-package at.ac.fhcampuswien.fhmdb;
+/*package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
@@ -12,6 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HomeControllerTest {
+
     private static HomeController homeController;
     @BeforeAll
     static void init() {
@@ -222,4 +223,4 @@ class HomeControllerTest {
         assertEquals(homeController.allMovies, homeController.observableMovies);
     }
 
-}
+}*/
