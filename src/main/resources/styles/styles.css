@@ -29,6 +29,12 @@
     -fx-text-fill: white;
 }
 
+.jfx-list-view .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-max-height: 0;
+}
+
+
 .movie-cell {
     -fx-background-color: black;
     -fx-padding: 2;
