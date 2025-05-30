@@ -112,10 +112,14 @@ public class MovieCell extends ListCell<Movie> {
                     .collect(Collectors.joining(", "));
             genre.setText(genres);
 
-            detail.setMaxWidth(this.getScene().getWidth() - 30);
+            // Bind the width of the layout to the width of the ListView minus a margin
+            layout.prefWidthProperty().bind(getListView().widthProperty().subtract(20));
+            detail.setMaxWidth(Double.MAX_VALUE);
+            detail.setWrapText(true);
 
             setGraphic(layout);
         }
     }
+
 }
 

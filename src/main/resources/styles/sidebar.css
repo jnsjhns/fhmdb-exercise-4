@@ -1,0 +1,27 @@
+/* Sidebar-Button Styling */
+.sidebar-btn {
+    -fx-font-size: 15px;
+    -fx-text-fill: #f5c518;
+    -fx-background-color: transparent;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12 0 12 24;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+    -fx-background-radius: 0 8 8 0;
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-font-weight: bold;
+    -fx-effect: null;
+    -fx-min-width: 130px;
+    -fx-max-width: 130px;
+}
+.sidebar-btn:hover {
+    -fx-background-color: #333333;
+    -fx-text-fill: #fffbe6;
+}
+
+/* Sidebar-Button aktiv markieren */
+.sidebar-btn:selected, .sidebar-btn:focused {
+    -fx-background-color: #f5c518;
+    -fx-text-fill: #222222;
+}
+

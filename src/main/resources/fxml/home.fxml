@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="331.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.controllers.MainController">
+<AnchorPane prefHeight="331.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.controllers.MainController" style="-fx-background-color: #222222;">
    <children>
       <BorderPane layoutX="76.0" prefHeight="45" style="-fx-background-color: black;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <left>
@@ -34,13 +34,18 @@
       <BorderPane fx:id="mainPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0">
 
       </BorderPane>
-      <JFXDrawer fx:id="drawer" prefWidth="130.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+      <JFXDrawer fx:id="drawer"
+                 prefWidth="130.0"
+                 AnchorPane.bottomAnchor="0.0"
+                 AnchorPane.topAnchor="0.0"
+                 AnchorPane.leftAnchor="0.0"
+                 stylesheets="@../styles/sidebar.css">
          <sidePane>
             <VBox>
                <children>
-                  <JFXButton fx:id="homeBtn" onAction="#navigateToMovielist" prefHeight="25.0" prefWidth="130.0" text="Home" />
-                  <JFXButton fx:id="watchlistBtn" onAction="#navigateToWatchlist" prefWidth="130.0" text="Watchlist" />
-                  <JFXButton fx:id="aboutBtn" prefWidth="130.0" text="About" />
+                  <JFXButton fx:id="homeBtn" styleClass="sidebar-btn" onAction="#navigateToMovielist" prefHeight="25.0" prefWidth="130.0" text="🎬 Home" />
+                  <JFXButton fx:id="watchlistBtn" styleClass="sidebar-btn" onAction="#navigateToWatchlist" prefWidth="130.0" text="⭐ Watchlist" />
                </children>
             </VBox>
          </sidePane>
