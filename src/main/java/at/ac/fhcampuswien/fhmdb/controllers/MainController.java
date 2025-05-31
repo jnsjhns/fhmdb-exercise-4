@@ -16,6 +16,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MainController {
+
+    //Make Controllers a singleton
+    private static MainController instance;
+
+    public static MainController getInstance () {
+        return instance;
+    }
+
+    public MainController (){
+        instance = this;
+    }
+
     @FXML
     public JFXHamburger hamburgerMenu;
 
@@ -66,6 +78,7 @@ public class MainController {
 
     public void setContent(String fxmlPath){
         FXMLLoader loader = new FXMLLoader(MainController.class.getResource(fxmlPath));
+        loader.setControllerFactory(new ControllerFactory());
         try {
             mainPane.setCenter(loader.load());
         } catch (Exception e) {

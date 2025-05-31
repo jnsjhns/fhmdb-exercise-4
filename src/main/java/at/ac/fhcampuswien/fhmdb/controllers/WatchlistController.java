@@ -20,6 +20,16 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class WatchlistController implements Initializable, Observer<Movie> {
+    //Make Controllers a singleton
+    private static WatchlistController instance;
+
+    public WatchlistController() {
+        instance = this;
+    }
+
+    public static WatchlistController getInstance() {
+        return instance;
+    }
 
     @FXML
     public JFXListView<MovieEntity> watchlistView;

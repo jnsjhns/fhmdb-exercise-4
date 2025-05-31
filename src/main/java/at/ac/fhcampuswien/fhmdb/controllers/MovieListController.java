@@ -30,6 +30,17 @@ import java.net.URL;
 import java.util.*;
 
 public class MovieListController implements Initializable, Observer<Movie> {
+    //Make Controllers a singleton
+    private static MovieListController instance;
+
+    public MovieListController() {
+        instance = this;
+    }
+
+    public static MovieListController getInstance() {
+        return instance;
+    }
+
     @FXML
     public JFXButton searchBtn;
 
