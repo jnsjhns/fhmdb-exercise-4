@@ -75,9 +75,8 @@ public class MovieListController implements Initializable, Observer<Movie> {
             try {
                 watchlistRepository.addToWatchlist(movie);
             } catch (DataBaseException e) {
-                // Fallback: Zeige Toast für Fehler
-                Stage stage = (Stage) movieListView.getScene().getWindow();
-                Toast.makeText(stage, "Could not add movie to watchlist", 3);
+                UserDialog dialog = new UserDialog("ERROR", "Could not add movie to watchlist");
+                dialog.show();
                 e.printStackTrace();
             }
         }
@@ -89,8 +88,8 @@ public class MovieListController implements Initializable, Observer<Movie> {
             watchlistRepository = new WatchlistRepository();
             watchlistRepository.addObserver(this);
         } catch (DataBaseException e) {
-            Stage stage = (Stage) movieListView.getScene().getWindow();
-            Toast.makeText(stage, "Could not initialize watchlist repository", 3);
+            UserDialog dialog = new UserDialog("ERROR", "❌ Restart the Application.");
+            dialog.show();
             e.printStackTrace();
         }
 
@@ -127,7 +126,7 @@ public class MovieListController implements Initializable, Observer<Movie> {
             MovieRepository movieRepository = new MovieRepository();
             return MovieEntity.toMovies(movieRepository.getAllMovies());
         } catch (DataBaseException e) {
-            UserDialog dialog = new UserDialog("DB Error", "Could not load movies from DB");
+            UserDialog dialog = new UserDialog("DB Error", "❌ No connection to database.");
             dialog.show();
             return new ArrayList<>();
         }
@@ -139,7 +138,7 @@ public class MovieListController implements Initializable, Observer<Movie> {
             movieRepository.removeAll();
             movieRepository.addAllMovies(movies);
         } catch (DataBaseException e) {
-            UserDialog dialog = new UserDialog("DB Error", "Could not write movies to DB");
+            UserDialog dialog = new UserDialog("DB Error", "❌ No connection to database.");
             dialog.show();
         }
     }
@@ -261,7 +260,7 @@ public class MovieListController implements Initializable, Observer<Movie> {
             return MovieAPI.getAllMovies(searchQuery, genre, releaseYear, ratingFrom);
         }catch (MovieApiException e){
             System.out.println(e.getMessage());
-            UserDialog dialog = new UserDialog("MovieApi Error", "Could not load movies from api.");
+            UserDialog dialog = new UserDialog("MovieApi Error", "❌ Could not load movies from api.");
             dialog.show();
             return new ArrayList<>();
         }
