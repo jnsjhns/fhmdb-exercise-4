@@ -38,7 +38,8 @@ public class MovieEntity {
     @DatabaseField()
     private double rating;
 
-    public MovieEntity(){}
+    public MovieEntity() {
+    }
 
     public MovieEntity(String apiId, String title, String description, int releaseYear, List<Genre> genres, String imgUrl, int lengthInMinutes, double rating) {
         this.apiId = apiId;
@@ -56,7 +57,6 @@ public class MovieEntity {
                 ? ""
                 : genres.stream().map(Genre::name).reduce((a, b) -> a + "," + b).orElse("");
     }
-
 
 
     public long getId() {
@@ -95,7 +95,7 @@ public class MovieEntity {
         this.releaseYear = releaseYear;
     }
 
-    public String getImageUrl(){
+    public String getImageUrl() {
         return this.imgUrl;
     }
 

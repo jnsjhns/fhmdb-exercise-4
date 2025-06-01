@@ -6,8 +6,28 @@ import com.j256.ormlite.dao.Dao;
 import java.util.List;
 
 public class MovieRepository {
-    Dao<MovieEntity, Long> dao;
+    // Singleton Pattern: Private statische Instanz
+    private static MovieRepository instance;
 
+    Dao<MovieEntity, Long> dao;
+    // private Constructor prevents external modification
+    private MovieRepository() throws DataBaseException {
+        try {
+            this.dao = DatabaseManager.getInstance().getMovieDao();
+        } catch (Exception e) {
+            throw new DataBaseException(e.getMessage());
+        }
+    }
+    // Singleton Pattern: Öffentliche getInstane() Methode für Zugriff auf die einzige Instanz
+    public static MovieRepository getInstance() throws DataBaseException {
+        if (instance == null) {
+            instance = new MovieRepository();
+        }
+        return instance;
+    }
+
+
+    /*
     public MovieRepository() throws DataBaseException {
         try {
             this.dao = DatabaseManager.getInstance().getMovieDao();
@@ -15,7 +35,7 @@ public class MovieRepository {
             throw new DataBaseException(e.getMessage());
         }
     }
-
+*/
     public long countRows() throws DataBaseException {
         try {
             return dao.countOf();
@@ -60,5 +80,6 @@ public class MovieRepository {
             throw new DataBaseException("Error while adding to movies");
         }
     }
+
 
 }

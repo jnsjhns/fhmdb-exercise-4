@@ -84,14 +84,8 @@ public class MovieListController implements Initializable, Observer<Movie> {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            watchlistRepository = new WatchlistRepository();
-            watchlistRepository.addObserver(this);
-        } catch (DataBaseException e) {
-            UserDialog dialog = new UserDialog("ERROR", "❌ Restart the Application.");
-            dialog.show();
-            e.printStackTrace();
-        }
+        watchlistRepository = WatchlistRepository.getInstance();
+        watchlistRepository.addObserver(this);
 
         initializeState();
         initializeLayout();
@@ -124,7 +118,7 @@ public class MovieListController implements Initializable, Observer<Movie> {
 
     private List<Movie> readCache() {
         try {
-            MovieRepository movieRepository = new MovieRepository();
+            MovieRepository movieRepository = MovieRepository.getInstance();
             return MovieEntity.toMovies(movieRepository.getAllMovies());
         } catch (DataBaseException e) {
             UserDialog dialog = new UserDialog("DB Error", "❌ No connection to database.");
@@ -135,7 +129,7 @@ public class MovieListController implements Initializable, Observer<Movie> {
 
     private void writeCache(List<Movie> movies) {
         try {
-            MovieRepository movieRepository = new MovieRepository();
+            MovieRepository movieRepository = MovieRepository.getInstance();
             movieRepository.removeAll();
             movieRepository.addAllMovies(movies);
         } catch (DataBaseException e) {
@@ -270,4 +264,7 @@ public class MovieListController implements Initializable, Observer<Movie> {
     public void sortBtnClicked(ActionEvent actionEvent) {
         sortMovies();
     }
+
+
+
 }

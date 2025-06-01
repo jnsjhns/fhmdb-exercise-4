@@ -11,10 +11,21 @@ import java.util.List;
 
 public class WatchlistRepository implements Observable<Movie> {
 
+    private static WatchlistRepository instance;
     private final List<Observer<Movie>> observers = new ArrayList<>();
 
     Dao<WatchlistMovieEntity, Long> dao;
 
+    private WatchlistRepository() { }
+    public static WatchlistRepository getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new WatchlistRepository();
+        }
+        return instance;
+    }
+    /*
     public WatchlistRepository() throws DataBaseException {
         try {
             this.dao = DatabaseManager.getInstance().getWatchlistDao();
@@ -22,7 +33,7 @@ public class WatchlistRepository implements Observable<Movie> {
             throw new DataBaseException(e.getMessage());
         }
     }
-
+*/
     @Override
     public void addObserver(Observer<Movie> o) {
         observers.add(o);

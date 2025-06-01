@@ -56,12 +56,12 @@ public class WatchlistController implements Initializable, Observer<Movie> {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         List<WatchlistMovieEntity> watchlist = new ArrayList<>();
         try {
-            watchlistRepository = new WatchlistRepository();
+            watchlistRepository = WatchlistRepository.getInstance();
             watchlistRepository.addObserver(this);
 
             watchlist = watchlistRepository.getWatchlist();
 
-            MovieRepository movieRepository = new MovieRepository();
+            MovieRepository movieRepository = MovieRepository.getInstance();
             List<MovieEntity> movies = new ArrayList<>();
 
             for (WatchlistMovieEntity movie : watchlist) {
@@ -97,7 +97,7 @@ public class WatchlistController implements Initializable, Observer<Movie> {
             // Update the observable watchlist in the UI with the latest data from the database
             try {
                 List<WatchlistMovieEntity> watchlist = watchlistRepository.getWatchlist();
-                MovieRepository movieRepository = new MovieRepository();
+                MovieRepository movieRepository = MovieRepository.getInstance();
                 List<MovieEntity> movies = new ArrayList<>();
                 for (WatchlistMovieEntity entity : watchlist) {
                     MovieEntity movieEntity = movieRepository.getMovie(entity.getApiId());
@@ -117,4 +117,6 @@ public class WatchlistController implements Initializable, Observer<Movie> {
             Toast.makeText(stage, message, 3);
         });
     }
+
+
 }
