@@ -2,6 +2,7 @@ package at.ac.fhcampuswien.fhmdb.controllers;
 
 import at.ac.fhcampuswien.fhmdb.enums.UIComponent;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.ui.UserDialog;
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
 import javafx.animation.TranslateTransition;
@@ -82,6 +83,7 @@ public class MainController {
         try {
             mainPane.setCenter(loader.load());
         } catch (Exception e) {
+            new UserDialog("ERROR", "❌ Could not load the requested screen. Please restart the app.").show();
             e.printStackTrace();
         }
 

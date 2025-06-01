@@ -1,7 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
-import at.ac.fhcampuswien.fhmdb.controllers.MainController;
-import at.ac.fhcampuswien.fhmdb.controllers.MovieListController;
+import at.ac.fhcampuswien.fhmdb.ui.UserDialog;
 import javafx.util.Callback;
 
 
@@ -30,9 +29,16 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
             } else {
                 return aClass.getDeclaredConstructor().newInstance(); // fallback
             }
-        } catch (Exception e) {
+        // ReflectiveOperationException handles reflection-related instantiation errors
+        } catch (ReflectiveOperationException e) {
+            System.err.println("Error creating controller: " + aClass.getSimpleName());
             e.printStackTrace();
-            return null;
+
+            // Show user dialog in the UI
+            new UserDialog("ERROR", "❌ Please restart the app.").show();
+
+            throw new RuntimeException("Controller creation failed for " + aClass.getSimpleName(), e);
         }
+
     }
 }

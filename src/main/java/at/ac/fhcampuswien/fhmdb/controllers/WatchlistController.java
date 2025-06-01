@@ -5,6 +5,7 @@ import at.ac.fhcampuswien.fhmdb.database.*;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.observer.Observer;
 import at.ac.fhcampuswien.fhmdb.ui.Toast;
+import at.ac.fhcampuswien.fhmdb.ui.UserDialog;
 import at.ac.fhcampuswien.fhmdb.ui.WatchlistCell;
 import com.jfoenix.controls.JFXListView;
 import javafx.application.Platform;
@@ -45,8 +46,7 @@ public class WatchlistController implements Initializable, Observer<Movie> {
                 watchlistRepository.removeFromWatchlist(movie);
                 observableWatchlist.remove(movieEntity);
             } catch (DataBaseException e) {
-                Stage stage = (Stage) watchlistView.getScene().getWindow();
-                Toast.makeText(stage, "Could not remove movie from watchlist", 3);
+                new UserDialog("DB ERROR", "❌ Please restart the app.");
                 e.printStackTrace();
             }
         }
@@ -56,12 +56,12 @@ public class WatchlistController implements Initializable, Observer<Movie> {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         List<WatchlistMovieEntity> watchlist = new ArrayList<>();
         try {
-            watchlistRepository = new WatchlistRepository();
+            watchlistRepository = WatchlistRepository.getInstance();
             watchlistRepository.addObserver(this);
 
             watchlist = watchlistRepository.getWatchlist();
 
-            MovieRepository movieRepository = new MovieRepository();
+            MovieRepository movieRepository = MovieRepository.getInstance();
             List<MovieEntity> movies = new ArrayList<>();
 
             for (WatchlistMovieEntity movie : watchlist) {
@@ -76,8 +76,7 @@ public class WatchlistController implements Initializable, Observer<Movie> {
             watchlistView.setCellFactory(movieListView -> new WatchlistCell(onRemoveFromWatchlistClicked));
 
         } catch (DataBaseException e) {
-            Stage stage = (Stage) watchlistView.getScene().getWindow();
-            Toast.makeText(stage, "Could not read movies from DB", 3);
+            new UserDialog("DB ERROR", "❌ Please restart the app.");
             e.printStackTrace();
         }
 
@@ -88,13 +87,17 @@ public class WatchlistController implements Initializable, Observer<Movie> {
         System.out.println("WatchlistController initialized");
     }
 
+    // Method from Interface Observer
     @Override
     public void update(Movie movie, boolean success, String message) {
+        // Ensures that all UI updates inside this block are executed on the JavaFX Application Thread
+        // Platform.runLater() schedules the code asynchronously for the UI thread
         Platform.runLater(() -> {
-            // Aktualisiere die Watchlist-Ansicht
+
+            // Update the observable watchlist in the UI with the latest data from the database
             try {
                 List<WatchlistMovieEntity> watchlist = watchlistRepository.getWatchlist();
-                MovieRepository movieRepository = new MovieRepository();
+                MovieRepository movieRepository = MovieRepository.getInstance();
                 List<MovieEntity> movies = new ArrayList<>();
                 for (WatchlistMovieEntity entity : watchlist) {
                     MovieEntity movieEntity = movieRepository.getMovie(entity.getApiId());
@@ -103,13 +106,17 @@ public class WatchlistController implements Initializable, Observer<Movie> {
                     }
                 }
                 observableWatchlist.setAll(movies);
+
             } catch (DataBaseException e) {
-                // Fehlerbehandlung optional
+                new UserDialog("Database Error", "❌ Failed to update the watchlist. Please try again or restart the app.").show();
+                e.printStackTrace();
             }
 
-            // Zeige Toast-Benachrichtigung unten rechts
+            // Always show the notification toast (success or failure) to the user
             Stage stage = (Stage) watchlistView.getScene().getWindow();
             Toast.makeText(stage, message, 3);
         });
     }
+
+
 }

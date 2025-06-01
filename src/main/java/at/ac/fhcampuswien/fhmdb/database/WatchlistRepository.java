@@ -5,14 +5,27 @@ import at.ac.fhcampuswien.fhmdb.observer.Observer;
 
 import com.j256.ormlite.dao.Dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WatchlistRepository implements Observable<Movie> {
 
+    private static WatchlistRepository instance;
     private final List<Observer<Movie>> observers = new ArrayList<>();
+
     Dao<WatchlistMovieEntity, Long> dao;
 
+    private WatchlistRepository() { }
+    public static WatchlistRepository getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new WatchlistRepository();
+        }
+        return instance;
+    }
+    /*
     public WatchlistRepository() throws DataBaseException {
         try {
             this.dao = DatabaseManager.getInstance().getWatchlistDao();
@@ -20,7 +33,7 @@ public class WatchlistRepository implements Observable<Movie> {
             throw new DataBaseException(e.getMessage());
         }
     }
-
+*/
     @Override
     public void addObserver(Observer<Movie> o) {
         observers.add(o);
@@ -48,38 +61,49 @@ public class WatchlistRepository implements Observable<Movie> {
     }
 
     // Adds a movie to the watchlist if it does not already exist
-    public int addToWatchlist(Movie movie) throws DataBaseException {
+    // Notifies all registered observers about the result
+    public void addToWatchlist(Movie movie) throws DataBaseException {
         try {
+            // Check if the movie is already in the watchlist (by apiId)
             long count = dao.queryBuilder().where().eq("apiId", movie.getId()).countOf();
             if (count == 0) {
+                // Movie was not yet in watchlist -> add it + notify observers
                 WatchlistMovieEntity entity = new WatchlistMovieEntity(movie.getId());
-                int result = dao.create(entity);
+                dao.create(entity);
                 notifyObservers(movie, true, "✔ '" + movie.getTitle() + "' was added to your watchlist.");
-                return result;
             } else {
+                // Movie was already in watchlist -> notify observers
                 notifyObservers(movie, false, "❌ '" + movie.getTitle() + "' is already in your watchlist.");
-                return 0;
             }
-        } catch (Exception e) {
-            notifyObservers(movie, false, "❌ Error adding '" + movie.getTitle() + "' to watchlist.");
+
+        } catch (SQLException e) {
+            // Handle SQL/database errors and notify observers
+            notifyObservers(movie, false, "❌ Database error: " + e.getMessage());
             e.printStackTrace();
-            throw new DataBaseException("Error while adding to watchlist");
+            throw new DataBaseException("Database error while adding " + movie + " to watchlist");
         }
     }
 
     // Removes a movie from the watchlist by apiId
-    public int removeFromWatchlist(Movie movie) throws DataBaseException {
+    // Notifies all registered observers about the result
+    public void removeFromWatchlist(Movie movie) throws DataBaseException {
         try {
+            // Attempt to delete the movie from the watchlist (by apiId)
             int result = dao.delete(dao.queryBuilder().where().eq("apiId", movie.getId()).query());
             if (result > 0) {
+                // Movie was successfully removed; notify observers
                 notifyObservers(movie, true, "✔ '" + movie.getTitle() + "' was removed from your watchlist.");
             } else {
+                // Movie was not found in the watchlist; notify observers
                 notifyObservers(movie, false, "❌ '" + movie.getTitle() + "' was not in your watchlist.");
             }
-            return result;
-        } catch (Exception e) {
+
+        } catch (SQLException e) {
+            // Handle SQL/database errors and notify observers
             notifyObservers(movie, false, "❌ Error removing '" + movie.getTitle() + "' from watchlist.");
-            throw new DataBaseException("Error while removing from watchlist");
+            e.printStackTrace();
+            throw new DataBaseException("Error while removing " + movie + " from watchlist");
         }
     }
+
 }
