@@ -75,7 +75,7 @@ public class MovieListController implements Initializable, Observer<Movie> {
             try {
                 watchlistRepository.addToWatchlist(movie);
             } catch (DataBaseException e) {
-                UserDialog dialog = new UserDialog("ERROR", "Could not add movie to watchlist");
+                UserDialog dialog = new UserDialog("DB-ERROR", "❌ Restart the Application.");
                 dialog.show();
                 e.printStackTrace();
             }
@@ -97,11 +97,12 @@ public class MovieListController implements Initializable, Observer<Movie> {
         initializeLayout();
     }
 
+    // Method from Interface Observer
     @Override
     public void update(Movie movie, boolean success, String message) {
         Platform.runLater(() -> {
             Stage stage = (Stage) movieListView.getScene().getWindow();
-            Toast.makeText(stage, message, 3); // Zeigt den Toast 3 Sekunden unten rechts
+            Toast.makeText(stage, message, 3);
         });
     }
 
