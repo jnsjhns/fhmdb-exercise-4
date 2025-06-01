@@ -1,19 +1,15 @@
 package at.ac.fhcampuswien.fhmdb;
 
-import at.ac.fhcampuswien.fhmdb.database.MovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.DataBaseException;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
-import at.ac.fhcampuswien.fhmdb.models.Genre;
-import at.ac.fhcampuswien.fhmdb.models.Movie;
-import at.ac.fhcampuswien.fhmdb.observer.Observer;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class WatchListRepositoryTest {
     @Test
-    public void testSingletonReturnSameInstance()
+    public void testSingletonReturnSameInstance() throws DataBaseException
     {
         WatchlistRepository instance1 = WatchlistRepository.getInstance();
         WatchlistRepository instance2 = WatchlistRepository.getInstance();
@@ -48,18 +44,6 @@ public class WatchListRepositoryTest {
     }
 
      */
-    // Hilfeklasse zum Beobachten
-    private static class TestObserver implements Observer<Movie>{
-        boolean wasUpdated = false;
-        String receiveMessage = "";
 
-
-        @Override
-        public void update(Movie data, boolean success, String message) {
-            wasUpdated = true;
-            receiveMessage = message;
-
-        }
-    }
 
 }

@@ -81,6 +81,8 @@ public class WatchlistRepository implements Observable<Movie> {
         }
     }
 
+
+
     // Removes a movie from the watchlist by apiId
     // Notifies all registered observers about the result
     public void removeFromWatchlist(Movie movie) throws DataBaseException {
