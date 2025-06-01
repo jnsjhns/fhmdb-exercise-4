@@ -75,7 +75,7 @@ public class MovieListController implements Initializable, Observer<Movie> {
             try {
                 watchlistRepository.addToWatchlist(movie);
             } catch (DataBaseException e) {
-                UserDialog dialog = new UserDialog("DB-ERROR", "❌ Restart the Application.");
+                UserDialog dialog = new UserDialog("DB-ERROR", "Restart the Application.");
                 dialog.show();
                 e.printStackTrace();
             }
