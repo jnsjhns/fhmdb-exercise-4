@@ -16,24 +16,21 @@ public class WatchlistRepository implements Observable<Movie> {
 
     Dao<WatchlistMovieEntity, Long> dao;
 
-    private WatchlistRepository() { }
-    public static WatchlistRepository getInstance()
-    {
-        if (instance == null)
-        {
+    private WatchlistRepository() throws DataBaseException {
+        try {
+            this.dao = DatabaseManager.getInstance().getWatchlistDao();
+        } catch (Exception e) {
+            throw new DataBaseException("Error initializing WatchlistRepository: " +e.getMessage());
+        }
+        }
+
+    public static WatchlistRepository getInstance() throws DataBaseException {
+        if (instance == null) {
             instance = new WatchlistRepository();
         }
         return instance;
     }
-    /*
-    public WatchlistRepository() throws DataBaseException {
-        try {
-            this.dao = DatabaseManager.getInstance().getWatchlistDao();
-        } catch (Exception e) {
-            throw new DataBaseException(e.getMessage());
-        }
-    }
-*/
+
     @Override
     public void addObserver(Observer<Movie> o) {
         observers.add(o);

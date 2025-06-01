@@ -84,7 +84,12 @@ public class MovieListController implements Initializable, Observer<Movie> {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
         watchlistRepository = WatchlistRepository.getInstance();
+        } catch (DataBaseException e) {
+            // Zeige dem User eine Fehlermeldung
+            System.out.println("Could not initialize Watchlist: " + e.getMessage());
+        }
         watchlistRepository.addObserver(this);
 
         initializeState();
