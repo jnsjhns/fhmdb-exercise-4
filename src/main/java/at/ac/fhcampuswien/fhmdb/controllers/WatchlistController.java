@@ -4,7 +4,6 @@ import at.ac.fhcampuswien.fhmdb.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.database.*;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.observer.Observer;
-import at.ac.fhcampuswien.fhmdb.ui.Toast;
 import at.ac.fhcampuswien.fhmdb.ui.UserDialog;
 import at.ac.fhcampuswien.fhmdb.ui.WatchlistCell;
 import com.jfoenix.controls.JFXListView;
@@ -13,7 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.stage.Stage;
+
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -80,42 +79,40 @@ public class WatchlistController implements Initializable, Observer<Movie> {
             e.printStackTrace();
         }
 
-        if (watchlist.size() == 0) {
+        if (watchlist.isEmpty()) {
             watchlistView.setPlaceholder(new javafx.scene.control.Label("Watchlist is empty"));
         }
 
         System.out.println("WatchlistController initialized");
     }
 
+
     // Method from Interface Observer
     @Override
     public void update(Movie movie, boolean success, String message) {
-        // Ensures that all UI updates inside this block are executed on the JavaFX Application Thread
-        // Platform.runLater() schedules the code asynchronously for the UI thread
-        Platform.runLater(() -> {
 
-            // Update the observable watchlist in the UI with the latest data from the database
-            try {
-                List<WatchlistMovieEntity> watchlist = watchlistRepository.getWatchlist();
-                MovieRepository movieRepository = MovieRepository.getInstance();
-                List<MovieEntity> movies = new ArrayList<>();
-                for (WatchlistMovieEntity entity : watchlist) {
-                    MovieEntity movieEntity = movieRepository.getMovie(entity.getApiId());
-                    if (movieEntity != null) {
-                        movies.add(movieEntity);
-                    }
+        // Update the observable watchlist for the UI with the latest data from db
+        try {
+            List<WatchlistMovieEntity> watchlist = watchlistRepository.getWatchlist();
+            MovieRepository movieRepository = MovieRepository.getInstance();
+            List<MovieEntity> movies = new ArrayList<>();
+            for (WatchlistMovieEntity entity : watchlist) {
+                MovieEntity movieEntity = movieRepository.getMovie(entity.getApiId());
+                if (movieEntity != null) {
+                    movies.add(movieEntity);
                 }
-                observableWatchlist.setAll(movies);
-
-            } catch (DataBaseException e) {
-                new UserDialog("Database Error", "❌ Failed to update the watchlist. Please try again or restart the app.").show();
-                e.printStackTrace();
             }
+            observableWatchlist.setAll(movies);
 
-            // Always show the notification toast (success or failure) to the user
-            Stage stage = (Stage) watchlistView.getScene().getWindow();
-            Toast.makeText(stage, message, 3);
-        });
+        } catch (DataBaseException e) {
+            new UserDialog("Database Error", "❌ Failed to update the watchlist. Please try again or restart the app.").show();
+            e.printStackTrace();
+        }
+
+        // redundant, bc MovielistController already calls the function
+        // Toast.makeText(StageHelper.getPrimaryStage(), message, 3);
+
+
     }
 
 

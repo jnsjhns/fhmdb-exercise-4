@@ -13,6 +13,7 @@ import at.ac.fhcampuswien.fhmdb.observer.Observer;
 import at.ac.fhcampuswien.fhmdb.sort.SortContext;
 import at.ac.fhcampuswien.fhmdb.sort.UnsortedState;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
+import at.ac.fhcampuswien.fhmdb.ui.StageHelper;
 import at.ac.fhcampuswien.fhmdb.ui.Toast;
 import at.ac.fhcampuswien.fhmdb.ui.UserDialog;
 import com.jfoenix.controls.JFXButton;
@@ -25,7 +26,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.*;
@@ -76,7 +76,7 @@ public class MovieListController implements Initializable, Observer<Movie> {
             try {
                 watchlistRepository.addToWatchlist(movie);
             } catch (DataBaseException e) {
-                UserDialog dialog = new UserDialog("DB-ERROR", "Restart the Application.");
+                UserDialog dialog = new UserDialog("DB-ERROR", "❌ Restart the Application.");
                 dialog.show();
                 e.printStackTrace();
             }
@@ -86,12 +86,13 @@ public class MovieListController implements Initializable, Observer<Movie> {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-        watchlistRepository = WatchlistRepository.getInstance();
+            watchlistRepository = WatchlistRepository.getInstance();
+            watchlistRepository.addObserver(this);
         } catch (DataBaseException e) {
-            // Zeige dem User eine Fehlermeldung
-            System.out.println("Could not initialize Watchlist: " + e.getMessage());
+            // Zeige dem User eine Fehlermeldung im UI
+            new UserDialog("Error", "❌ Restart the app.").show();
+            e.printStackTrace();
         }
-        watchlistRepository.addObserver(this);
 
         initializeState();
         initializeLayout();
@@ -100,10 +101,7 @@ public class MovieListController implements Initializable, Observer<Movie> {
     // Method from Interface Observer
     @Override
     public void update(Movie movie, boolean success, String message) {
-        Platform.runLater(() -> {
-            Stage stage = (Stage) movieListView.getScene().getWindow();
-            Toast.makeText(stage, message, 3);
-        });
+        Toast.makeText(StageHelper.getPrimaryStage(), message, 3);
     }
 
     public void initializeState() {
@@ -112,8 +110,7 @@ public class MovieListController implements Initializable, Observer<Movie> {
             result = MovieAPI.getAllMovies();
             writeCache(result);
         } catch (MovieApiException e){
-            UserDialog dialog = new UserDialog("MovieAPI Error", "Could not load movies from api. Get movies from db cache instead");
-            dialog.show();
+            new UserDialog("Error", "❌ Try again, or restart the app.").show();
             result = readCache();
         }
 
@@ -127,8 +124,7 @@ public class MovieListController implements Initializable, Observer<Movie> {
             MovieRepository movieRepository = MovieRepository.getInstance();
             return MovieEntity.toMovies(movieRepository.getAllMovies());
         } catch (DataBaseException e) {
-            UserDialog dialog = new UserDialog("DB Error", "❌ No connection to database.");
-            dialog.show();
+            new UserDialog("DB Error", "❌ No connection to database.").show();
             return new ArrayList<>();
         }
     }
